@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+  mysql:
+    image: mariadb:10.6
+    container_name: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: DBprodutos
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./docker/mysql-data:/var/lib/mysql
+      - ./docker/create_table.sql:/docker-entrypoint-initdb.d/create_table.sql
+
+volumes:
+  mysql-data:
