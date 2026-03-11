@@ -25,7 +25,8 @@ public class Produto {
     @Column
     private String categoria;
 
-    public Produto() { }
+    public Produto() {
+    }
 
     public Produto(String nome, String descricao, Double preco, Integer quantidade, String categoria) {
         this.nome = nome;
@@ -81,7 +82,13 @@ public class Produto {
 
     @Override
     public String toString() {
-        return String.format("Produto{id=%d, nome='%s', descricao='%s', preco=%.2f, quantidade=%d, categoria='%s'}",
-                id, nome, descricao, preco, quantidade, categoria);
+        return String.format("Produto{id=%d, nome=\"%s\", descricao=%s, preco=%s, quantidade=%d, categoria=%s}",
+                id,
+                nome,
+                descricao == null ? "null" : "\"" + descricao + "\"",
+                preco == null ? "null" : String.format("%.2f", preco).replace(',', '.'),
+                quantidade,
+                categoria == null ? "null" : "\"" + categoria + "\""
+        );
     }
 }

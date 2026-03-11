@@ -1,123 +1,257 @@
 package com.gerenciador;
 
 import com.gerenciador.dao.ProdutoDAO;
+import com.gerenciador.erro.LeituraException;
 import com.gerenciador.modelo.Produto;
 
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Classe principal do gerenciador de produtos
+ * Implementa um sistema de menu para CRUD de produtos
+ */
 public class Main {
-    private static ProdutoDAO produtoDAO = new ProdutoDAO();
+    private static final ProdutoDAO produtoDAO = new ProdutoDAO();
+    private static final Scanner scanner = new Scanner(System.in);
+    private static final int MAXIMO_TENTATIVAS = 3;
 
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        boolean running = true;
+        try {
+            boolean executando = true;
 
-        while (running) {
-            System.out.println("Menu:");
-            System.out.println("[1] Adicionar Produto");
-            System.out.println("[2] Listar Produtos");
-            System.out.println("[3] Atualizar Produto");
-            System.out.println("[4] Remover Produto");
-            System.out.println("[5] Sair");
-            System.out.print("Escolha uma opção: ");
+            while (executando) {
+                exibirMenu();
+                String opt = scanner.nextLine().trim();
 
-            String opt = scanner.nextLine();
-            switch (opt) {
-                case "1":
-                    adicionar(scanner);
-                    break;
-                case "2":
-                    listar();
-                    break;
-                case "3":
-                    atualizar(scanner);
-                    break;
-                case "4":
-                    remover(scanner);
-                    break;
-                case "5":
-                    running = false;
-                    break;
-                default:
-                    System.out.println("Opção inválida");
+                switch (opt) {
+                    case "1":
+                        adicionarProduto();
+                        break;
+                    case "2":
+                        listarProdutos();
+                        break;
+                    case "3":
+                        atualizarProduto();
+                        break;
+                    case "4":
+                        removerProduto();
+                        break;
+                    case "5":
+                        executando = false;
+                        break;
+                    default:
+                        System.out.println("Opção inválida. Tente novamente.\n");
+                }
             }
+
+            System.out.println("Encerrando aplicação...");
+        } finally {
+            scanner.close();
+            System.exit(0);
         }
-
-        scanner.close();
-        System.out.println("Encerrando...");
-        System.exit(0);
     }
 
-    private static void adicionar(Scanner scanner) {
-        System.out.print("Nome: ");
-        String nome = scanner.nextLine();
-
-        System.out.print("Descrição: ");
-        String descricao = scanner.nextLine();
-
-        System.out.print("Preço: ");
-        Double preco = Double.parseDouble(scanner.nextLine());
-
-        System.out.print("Quantidade: ");
-        Integer quantidade = Integer.parseInt(scanner.nextLine());
-
-        System.out.print("Categoria: ");
-        String categoria = scanner.nextLine();
-
-        Produto p = new Produto(nome, descricao, preco, quantidade, categoria);
-        produtoDAO.salvar(p);
-        System.out.println("Produto salvo com id=" + p.getId());
+    /**
+     * Exibe o menu principal
+     */
+    private static void exibirMenu() {
+        System.out.println("\n========== MENU ==========");
+        System.out.println("[1] Adicionar Produto");
+        System.out.println("[2] Listar Produtos");
+        System.out.println("[3] Atualizar Produto");
+        System.out.println("[4] Remover Produto");
+        System.out.println("[5] Sair");
+        System.out.print("Escolha uma opção: ");
     }
 
-    private static void listar() {
-        List<Produto> list = produtoDAO.listar();
-        if (list.isEmpty()) {
-            System.out.println("Nenhum produto encontrado.");
+    /**
+     * Adiciona um novo produto
+     */
+    private static void adicionarProduto() {
+        System.out.println("\n--- Adicionar Novo Produto ---");
+
+        try {
+            String nome = lerString("Nome: ", false);
+            String descricao = lerString("Descrição: ", true);
+            Double preco = lerDouble("Preço: ", true);
+            Integer quantidade = lerInteger("Quantidade: ", true);
+            String categoria = lerString("Categoria: ", true);
+
+            Produto produto = new Produto(nome, descricao, preco, quantidade, categoria);
+            produtoDAO.salvar(produto);
+            System.out.println("Produto salvo com sucesso! ID: " + produto.getId());
+        } catch (LeituraException e) {
+            System.out.println("Operação cancelada: Número de tentativas excedido.");
+        }
+    }
+
+    /**
+     * Lista todos os produtos cadastrados
+     */
+    private static void listarProdutos() {
+        System.out.println("\n--- Lista de Produtos ---");
+        List<Produto> produtos = produtoDAO.listar();
+
+        if (produtos.isEmpty()) {
+            System.out.println("Nenhum produto encontrado.\n");
             return;
         }
-        for (Produto p : list) {
+
+        for (Produto p : produtos) {
             System.out.println(p);
         }
     }
 
-    private static void atualizar(Scanner scanner) {
-        System.out.print("ID do produto a atualizar: ");
-        Long id = Long.parseLong(scanner.nextLine());
-        Produto p = produtoDAO.buscarPorId(id);
-        if (p == null) {
-            System.out.println("Produto não encontrado");
-            return;
+    /**
+     * Atualiza um produto existente com validação de entrada
+     */
+    private static void atualizarProduto() {
+      System.out.println("\n--- Atualizar Produto ---");
+        try {
+            Long id = lerLong("ID do produto a atualizar: ");
+            Produto produto = produtoDAO.buscarPorId(id);
+            if (produto == null) {
+                System.out.println("Produto com ID " + id + " não encontrado.\n");
+                return;
+            }
+
+            produto.setNome(lerString("Nome: ", false));
+            produto.setDescricao(lerString("Descrição: ", true));
+            produto.setPreco(lerDouble("Preço: ", true));
+            produto.setQuantidade(lerInteger("Quantidade: ", true));
+            produto.setCategoria(lerString("Categoria: ", true));
+
+            produtoDAO.atualizar(produto);
+            System.out.println("Produto atualizado com sucesso!\n");
+        } catch (LeituraException e) {
+            System.out.println("Operação cancelada: Número de tentativas excedido.");
         }
-        System.out.print("Novo nome (enter para manter: " + p.getNome() + "): ");
-        String nome = scanner.nextLine();
-        if (!nome.trim().isEmpty()) p.setNome(nome);
-
-        System.out.print("Nova descrição (enter para manter: " + p.getDescricao() + "): ");
-        String descricao = scanner.nextLine();
-        if (!descricao.trim().isEmpty()) p.setDescricao(descricao);
-
-        System.out.print("Novo preço (enter para manter: " + p.getPreco() + "): ");
-        String preco = scanner.nextLine();
-        if (!preco.trim().isEmpty()) p.setPreco(Double.parseDouble(preco));
-
-        System.out.print("Nova quantidade (enter para manter: " + p.getQuantidade() + "): ");
-        String quantidade = scanner.nextLine();
-        if (!quantidade.trim().isEmpty()) p.setQuantidade(Integer.parseInt(quantidade));
-
-        System.out.print("Nova categoria (enter para manter: " + p.getCategoria() + "): ");
-        String categoria = scanner.nextLine();
-        if (!categoria.trim().isEmpty()) p.setCategoria(categoria);
-
-        produtoDAO.atualizar(p);
-        System.out.println("Produto atualizado.");
     }
 
-    private static void remover(Scanner scanner) {
-        System.out.print("ID do produto a remover: ");
-        Long id = Long.parseLong(scanner.nextLine());
-        produtoDAO.remover(id);
-        System.out.println("Produto removido (se existia).");
+    /**
+     * Remove um produto pelo ID com validação
+     */
+    private static void removerProduto() {
+        System.out.println("\n--- Remover Produto ---");
+
+        try {
+            Long id = lerLong("ID do produto a remover: ");
+            Produto produto = produtoDAO.buscarPorId(id);
+            if (produto == null) {
+                System.out.println("Produto com ID " + id + " não encontrado.\n");
+                return;
+            }
+            produtoDAO.remover(produto.getId());
+            System.out.println("Produto removido com sucesso!\n");
+        } catch (LeituraException e) {
+            System.out.println("Operação cancelada: Número de tentativas excedido.");
+        }
+    }
+
+    /**
+     * Lê uma string não vazia do usuário com validação
+     * @param prompt Mensagem a exibir
+     * @param canBeEmpty Valor pode ser vazio
+     **/
+    private static String lerString(String prompt, Boolean canBeEmpty) throws LeituraException {
+        for (int attempt = 1; attempt <= MAXIMO_TENTATIVAS; attempt++) {
+            System.out.print(prompt);
+            String input = scanner.nextLine().trim();
+            if (input.isEmpty()) {
+                if (canBeEmpty) {
+                    return null;
+                }
+                System.out.println("Erro: O campo não pode estar vazio. Tentativa " + attempt + "/" + MAXIMO_TENTATIVAS);
+            } else {
+                return input;
+            }
+        }
+        throw new LeituraException();
+    }
+
+    /**
+     * Lê um Long do usuário com validação
+     * @param prompt Mensagem a exibir
+     * @return Long validado ou null se exceder o máximo de tentativas
+     */
+    public static Long lerLong(String prompt) throws LeituraException {
+        for (int attempt = 1; attempt <= MAXIMO_TENTATIVAS; attempt++) {
+            System.out.print(prompt);
+            String input = scanner.nextLine().trim();
+
+            if (input.isEmpty()) {
+                System.out.println("Erro: O campo não pode estar vazio. Tentativa " + attempt + "/" + MAXIMO_TENTATIVAS);
+                continue;
+            }
+
+            try {
+                long value = Long.parseLong(input);
+                if (value < 0) {
+                    System.out.println("Erro: O valor deve ser positivo. Tentativa " + attempt + "/" + MAXIMO_TENTATIVAS);
+                    continue;
+                }
+                return value;
+            } catch (NumberFormatException e) {
+                System.out.println("Erro: Formato inválido. Digite um número válido. Tentativa " + attempt + "/" + MAXIMO_TENTATIVAS);
+            }
+        }
+        throw new LeituraException();
+    }
+
+    /**
+     * Lê um Integer do usuário com validação
+     * @param prompt Mensagem a exibir
+     * @param canBeEmpty Valor pode ser vazio
+     * @return Long validado ou null se exceder o máximo de tentativas
+     */
+    public static Integer lerInteger(String prompt, Boolean canBeEmpty) throws LeituraException {
+        for (int attempt = 1; attempt <= MAXIMO_TENTATIVAS; attempt++) {
+            System.out.print(prompt);
+            String input = scanner.nextLine().trim();
+
+            if (input.isEmpty() & canBeEmpty) {
+                return null;
+            }
+            try {
+                int value = Integer.parseInt(input);
+                if (value < 0) {
+                    System.out.println("Erro: O valor deve ser positivo. Tentativa " + attempt + "/" + MAXIMO_TENTATIVAS);
+                    continue;
+                }
+                return value;
+            } catch (NumberFormatException e) {
+                System.out.println("Erro: Formato inválido. Digite um número válido. Tentativa " + attempt + "/" + MAXIMO_TENTATIVAS);
+            }
+        }
+        throw new LeituraException();
+    }
+
+    /**
+     * Lê um Double do usuário com validação
+     * @param prompt Mensagem a exibir
+     * @param canBeEmpty Valor pode ser vazio
+     * @return Long validado ou null se exceder o máximo de tentativas
+     */
+    public static Double lerDouble(String prompt, Boolean canBeEmpty) throws LeituraException {
+        for (int attempt = 1; attempt <= MAXIMO_TENTATIVAS; attempt++) {
+            System.out.print(prompt);
+            String input = scanner.nextLine().trim();
+
+            if (input.isEmpty() & canBeEmpty) {
+                return null;
+            }
+            try {
+                double value = Double.parseDouble(input);
+                if (value < 0) {
+                    System.out.println("Erro: O valor deve ser positivo. Tentativa " + attempt + "/" + MAXIMO_TENTATIVAS);
+                    continue;
+                }
+                return value;
+            } catch (NumberFormatException e) {
+                System.out.println("Erro: Formato inválido. Digite um número válido. Tentativa " + attempt + "/" + MAXIMO_TENTATIVAS);
+            }
+        }
+        throw new LeituraException();
     }
 }
-
