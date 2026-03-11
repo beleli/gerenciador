@@ -30,13 +30,13 @@ mvn exec:java -Dexec.mainClass="com.gerenciador.Main"
 
 ## 📋 Funcionalidades
 
-| # | Funcionalidade | Status | Validações |
+| # | Funcionalidade |
 |---|---|
-| 1 | Adicionar Produto
-| 2 | Listar Produtos
-| 3 | Atualizar Produto
-| 4 | Remover Produto
-| 5 | Sair
+| 1 | Adicionar Produto |
+| 2 | Listar Produtos |
+| 3 | Atualizar Produto |
+| 4 | Remover Produto |
+| 5 | Sair |
 
 ---
 
@@ -71,7 +71,6 @@ gerenciador/
 │   │   └── Produto.java               [Entidade]
 │   └── util/
 │       ├── HibernateUtil.java         [Configuração DB]
-│       ├── InputValidator.java        [🆕 Validações]
 ├── src/main/resources/
 │   └── hibernate.cfg.xml              [Config Hibernate]
 ├── pom.xml                            [Dependências Maven]
@@ -80,19 +79,6 @@ gerenciador/
 
 ---
 
-## 📚 Documentação
-
-Consulte os seguintes arquivos para aprender mais:
-
-| Documento | Conteúdo |
-|-----------|----------|
-| **GUIA_DE_USO.md** | 📖 Como usar cada funcionalidade |
-| **REFATORACAO.md** | 🔧 Detalhes das melhorias implementadas |
-| **PADROES_E_PRATICAS.md** | 🏗️ Padrões de design e boas práticas |
-| **COMPARACAO_ANTES_DEPOIS.md** | Comparação lado-a-lado do código |
-| **SUMARIO_VISUAL.md** | 📊 Resumo visual com diagramas |
-
----
 
 ## 🎯 Exemplo de Uso
 
@@ -136,10 +122,10 @@ O projeto usa **MySQL** com **Hibernate** para persistência.
 CREATE TABLE produtos (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(255) NOT NULL,
-    descricao TEXT,
+    descricao VARCHAR(100),
     preco DOUBLE,
     quantidade INTEGER,
-    categoria VARCHAR(255)
+    categoria VARCHAR(100)
 );
 ```
 
