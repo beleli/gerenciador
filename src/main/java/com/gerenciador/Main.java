@@ -41,7 +41,7 @@ public class Main {
                         executando = false;
                         break;
                     default:
-                        System.out.println("Opção inválida. Tente novamente.\n");
+                        System.out.println("Opção inválida. Tente novamente.");
                 }
             }
 
@@ -94,7 +94,7 @@ public class Main {
         List<Produto> produtos = produtoDAO.listar();
 
         if (produtos.isEmpty()) {
-            System.out.println("Nenhum produto encontrado.\n");
+            System.out.println("Nenhum produto encontrado.");
             return;
         }
 
@@ -112,7 +112,7 @@ public class Main {
             Long id = lerLong("ID do produto a atualizar: ");
             Produto produto = produtoDAO.buscarPorId(id);
             if (produto == null) {
-                System.out.println("Produto com ID " + id + " não encontrado.\n");
+                System.out.println("Produto com ID " + id + " não encontrado.");
                 return;
             }
 
@@ -123,7 +123,7 @@ public class Main {
             produto.setCategoria(lerString("Categoria: ", true));
 
             produtoDAO.atualizar(produto);
-            System.out.println("Produto atualizado com sucesso!\n");
+            System.out.println("Produto atualizado com sucesso!");
         } catch (LeituraException e) {
             System.out.println("Operação cancelada: Número de tentativas excedido.");
         }
@@ -139,11 +139,11 @@ public class Main {
             Long id = lerLong("ID do produto a remover: ");
             Produto produto = produtoDAO.buscarPorId(id);
             if (produto == null) {
-                System.out.println("Produto com ID " + id + " não encontrado.\n");
+                System.out.println("Produto com ID " + id + " não encontrado.");
                 return;
             }
             produtoDAO.remover(produto.getId());
-            System.out.println("Produto removido com sucesso!\n");
+            System.out.println("Produto removido com sucesso!");
         } catch (LeituraException e) {
             System.out.println("Operação cancelada: Número de tentativas excedido.");
         }
