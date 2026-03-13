@@ -42,9 +42,8 @@ mvn exec:java -Dexec.mainClass="com.gerenciador.Main"
 
 ## 🔍 Validações Implementadas
 
-### Strings (Nome, Descrição, Categoria)
+### Strings (Nome, Descrição)
 ```
-✓ Não podem estar vazias
 ✓ Trim automático de espaços
 ✓ 3 tentativas antes de cancelar
 ```
@@ -53,7 +52,6 @@ mvn exec:java -Dexec.mainClass="com.gerenciador.Main"
 ```
 ✓ Formato válido (Double/Integer)
 ✓ Valores positivos (validação ≥ 0)
-✓ Não podem estar vazios
 ✓ 3 tentativas antes de cancelar
 ```
 
@@ -89,7 +87,6 @@ Nome: Notebook Dell
 Descrição: Laptop de alta performance
 Preço: 3500.50
 Quantidade: 5
-Categoria: Eletrônicos
 Produto salvo com sucesso! ID: 1
 ```
 
@@ -119,14 +116,17 @@ O projeto usa **MySQL** com **Hibernate** para persistência.
 
 ### Tabela de Produtos
 ```sql
-CREATE TABLE produtos (
+CREATE DATABASE IF NOT EXISTS DBprodutos;
+
+USE DBprodutos;
+
+CREATE TABLE IF NOT EXISTS produtos (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(255) NOT NULL,
-    descricao VARCHAR(100),
-    preco DOUBLE,
-    quantidade INTEGER,
-    categoria VARCHAR(100)
-);
+    descricao VARCHAR(255),
+    preco DECIMAL(10,2),
+    quantidade INT
+    );
 ```
 
 ---

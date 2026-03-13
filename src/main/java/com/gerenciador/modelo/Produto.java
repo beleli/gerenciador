@@ -12,28 +12,18 @@ public class Produto {
 
     @Column(nullable = false)
     private String nome;
-
-    @Column
     private String descricao;
-
-    @Column
     private Double preco;
-
-    @Column
     private Integer quantidade;
-
-    @Column
-    private String categoria;
 
     public Produto() {
     }
 
-    public Produto(String nome, String descricao, Double preco, Integer quantidade, String categoria) {
+    public Produto(String nome, String descricao, Double preco, Integer quantidade) {
         this.nome = nome;
         this.descricao = descricao;
         this.preco = preco;
         this.quantidade = quantidade;
-        this.categoria = categoria;
     }
 
     public Long getId() {
@@ -68,27 +58,16 @@ public class Produto {
         return quantidade;
     }
 
-    public void setQuantidade(Integer quantidade) {
-        this.quantidade = quantidade;
-    }
-
-    public String getCategoria() {
-        return categoria;
-    }
-
-    public void setCategoria(String categoria) {
-        this.categoria = categoria;
-    }
+    public void setQuantidade(Integer quantidade) { this.quantidade = quantidade; }
 
     @Override
     public String toString() {
-        return String.format("Produto{id=%d, nome=\"%s\", descricao=%s, preco=%s, quantidade=%d, categoria=%s}",
+        return String.format("Produto(id=%d, nome=\"%s\", descricao=%s, preco=%s, quantidade=%d)",
                 id,
                 nome,
-                descricao == null ? "null" : "\"" + descricao + "\"",
-                preco == null ? "null" : String.format("%.2f", preco).replace(',', '.'),
-                quantidade,
-                categoria == null ? "null" : "\"" + categoria + "\""
+                descricao == null ? null : "\"" + descricao + "\"",
+                preco == null ? null : String.format("%.2f", preco).replace(',', '.'),
+                quantidade
         );
     }
 }

@@ -76,9 +76,8 @@ public class Main {
             String descricao = lerString("Descrição: ", true);
             Double preco = lerDouble("Preço: ", true);
             Integer quantidade = lerInteger("Quantidade: ", true);
-            String categoria = lerString("Categoria: ", true);
 
-            Produto produto = new Produto(nome, descricao, preco, quantidade, categoria);
+            Produto produto = new Produto(nome, descricao, preco, quantidade);
             produtoDAO.salvar(produto);
             System.out.println("Produto salvo com sucesso! ID: " + produto.getId());
         } catch (LeituraException e) {
@@ -120,7 +119,6 @@ public class Main {
             produto.setDescricao(lerString("Descrição: ", true));
             produto.setPreco(lerDouble("Preço: ", true));
             produto.setQuantidade(lerInteger("Quantidade: ", true));
-            produto.setCategoria(lerString("Categoria: ", true));
 
             produtoDAO.atualizar(produto);
             System.out.println("Produto atualizado com sucesso!");
@@ -150,7 +148,7 @@ public class Main {
     }
 
     /**
-     * Lê uma string não vazia do usuário com validação
+     * Lê uma string do usuário com validação
      * @param prompt Mensagem a exibir
      * @param canBeEmpty Valor pode ser vazio
      **/
