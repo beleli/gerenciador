@@ -22,9 +22,9 @@ public class Main {
 
             while (executando) {
                 exibirMenu();
-                String opt = scanner.nextLine().trim();
+                String opcao = scanner.nextLine().trim();
 
-                switch (opt) {
+                switch (opcao) {
                     case "1":
                         adicionarProduto();
                         break;
@@ -81,7 +81,7 @@ public class Main {
             produtoDAO.salvar(produto);
             System.out.println("Produto salvo com sucesso! ID: " + produto.getId());
         } catch (LeituraException e) {
-            System.out.println("Operação cancelada: Número de tentativas excedido.");
+            System.out.println(e.getMessage());
         }
     }
 
@@ -98,7 +98,7 @@ public class Main {
         }
 
         for (Produto p : produtos) {
-            System.out.println(p);
+            System.out.println(p.toString());
         }
     }
 
@@ -123,7 +123,7 @@ public class Main {
             produtoDAO.atualizar(produto);
             System.out.println("Produto atualizado com sucesso!");
         } catch (LeituraException e) {
-            System.out.println("Operação cancelada: Número de tentativas excedido.");
+            System.out.println(e.getMessage());
         }
     }
 
@@ -143,21 +143,21 @@ public class Main {
             produtoDAO.remover(produto.getId());
             System.out.println("Produto removido com sucesso!");
         } catch (LeituraException e) {
-            System.out.println("Operação cancelada: Número de tentativas excedido.");
+            System.out.println(e.getMessage());
         }
     }
 
     /**
      * Lê uma string do usuário com validação
-     * @param prompt Mensagem a exibir
-     * @param canBeEmpty Valor pode ser vazio
+     * @param mensagem Mensagem a exibir
+     * @param opcional Valor pode ser vazio
      **/
-    private static String lerString(String prompt, Boolean canBeEmpty) throws LeituraException {
+    private static String lerString(String mensagem, Boolean opcional) throws LeituraException {
         for (int attempt = 1; attempt <= MAXIMO_TENTATIVAS; attempt++) {
-            System.out.print(prompt);
+            System.out.print(mensagem);
             String input = scanner.nextLine().trim();
             if (input.isEmpty()) {
-                if (canBeEmpty) {
+                if (opcional) {
                     return null;
                 }
                 System.out.println("Erro: O campo não pode estar vazio. Tentativa " + attempt + "/" + MAXIMO_TENTATIVAS);
@@ -170,12 +170,12 @@ public class Main {
 
     /**
      * Lê um Long do usuário com validação
-     * @param prompt Mensagem a exibir
+     * @param mensagem Mensagem a exibir
      * @return Long validado ou null se exceder o máximo de tentativas
      */
-    public static Long lerLong(String prompt) throws LeituraException {
+    public static Long lerLong(String mensagem) throws LeituraException {
         for (int attempt = 1; attempt <= MAXIMO_TENTATIVAS; attempt++) {
-            System.out.print(prompt);
+            System.out.print(mensagem);
             String input = scanner.nextLine().trim();
 
             if (input.isEmpty()) {
@@ -199,13 +199,13 @@ public class Main {
 
     /**
      * Lê um Integer do usuário com validação
-     * @param prompt Mensagem a exibir
+     * @param mensagem Mensagem a exibir
      * @param canBeEmpty Valor pode ser vazio
      * @return Long validado ou null se exceder o máximo de tentativas
      */
-    public static Integer lerInteger(String prompt, Boolean canBeEmpty) throws LeituraException {
+    public static Integer lerInteger(String mensagem, Boolean canBeEmpty) throws LeituraException {
         for (int attempt = 1; attempt <= MAXIMO_TENTATIVAS; attempt++) {
-            System.out.print(prompt);
+            System.out.print(mensagem);
             String input = scanner.nextLine().trim();
 
             if (input.isEmpty() & canBeEmpty) {
@@ -227,13 +227,13 @@ public class Main {
 
     /**
      * Lê um Double do usuário com validação
-     * @param prompt Mensagem a exibir
+     * @param mensagem Mensagem a exibir
      * @param canBeEmpty Valor pode ser vazio
      * @return Long validado ou null se exceder o máximo de tentativas
      */
-    public static Double lerDouble(String prompt, Boolean canBeEmpty) throws LeituraException {
+    public static Double lerDouble(String mensagem, Boolean canBeEmpty) throws LeituraException {
         for (int attempt = 1; attempt <= MAXIMO_TENTATIVAS; attempt++) {
-            System.out.print(prompt);
+            System.out.print(mensagem);
             String input = scanner.nextLine().trim();
 
             if (input.isEmpty() & canBeEmpty) {
