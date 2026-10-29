@@ -4,13 +4,6 @@
 
 **GitHub:** [beleli/gerenciador](https://github.com/beleli/gerenciador)
 
-## ✨ Destaques
-
-- ✅ **Clean Code** - Código limpo e bem documentado
-- ✅ **SOLID Principles** - Arquitetura profissional
-
----
-
 ## 🚀 Início Rápido
 
 ### Pré-requisitos
