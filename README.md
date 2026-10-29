@@ -2,6 +2,8 @@
 
 > Aplicação Java para gerenciamento de produtos com validação.
 
+**GitHub:** [beleli/gerenciador](https://github.com/beleli/gerenciador)
+
 ## ✨ Destaques
 
 - ✅ **Clean Code** - Código limpo e bem documentado
